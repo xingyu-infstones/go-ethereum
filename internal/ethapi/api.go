@@ -729,6 +729,16 @@ func (s *BlockChainAPI) GetHeaderByHash(ctx context.Context, hash common.Hash) m
 	return nil
 }
 
+type getRelatedBlockNumberArgs struct {
+	Address   []common.Address `json:"address"`
+	FromBlock *rpc.BlockNumber `json:"fromBlock"`
+	ToBlock   *rpc.BlockNumber `json:"toBlock"`
+}
+
+func (s *BlockChainAPI) GetRelatedBlockNumber(ctx context.Context, args getRelatedBlockNumberArgs) map[string]interface{} {
+	return nil
+}
+
 // GetBlockByNumber returns the requested canonical block.
 // * When blockNr is -1 the chain head is returned.
 // * When blockNr is -2 the pending chain head is returned.
