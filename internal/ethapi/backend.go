@@ -60,6 +60,7 @@ type Backend interface {
 	HeaderByNumberOrHash(ctx context.Context, blockNrOrHash rpc.BlockNumberOrHash) (*types.Header, error)
 	CurrentHeader() *types.Header
 	CurrentBlock() *types.Block
+	GetRelatedTx(ctx context.Context, Address []common.Address) (interface{}, error)
 	GetRelatedBlockNumber(ctx context.Context, Address []common.Address, FromBlock *rpc.BlockNumber, ToBlock *rpc.BlockNumber) ([]uint64, error)
 	BlockByNumber(ctx context.Context, number rpc.BlockNumber) (*types.Block, error)
 	BlockByHash(ctx context.Context, hash common.Hash) (*types.Block, error)

@@ -207,8 +207,12 @@ func (b *LesApiBackend) GetPoolTransaction(txHash common.Hash) *types.Transactio
 	return b.eth.txPool.GetTransaction(txHash)
 }
 
-func (b *LesApiBackend) GetRelatedBlockNumber(ctx context.Context, Address []common.Address, FromBlock *rpc.BlockNumber, ToBlock *rpc.BlockNumber) ([]uint64, error){
-	return []uint64{22,22,22}, nil
+func (b *LesApiBackend) GetRelatedBlockNumber(ctx context.Context, Address []common.Address, FromBlock *rpc.BlockNumber, ToBlock *rpc.BlockNumber) ([]uint64, error) {
+	return []uint64{22, 22, 22}, nil
+}
+
+func (b *LesApiBackend) GetRelatedTx(ctx context.Context, Address []common.Address) (interface{}, error) {
+	return nil, nil
 }
 
 func (b *LesApiBackend) GetTransaction(ctx context.Context, txHash common.Hash) (*types.Transaction, common.Hash, uint64, uint64, error) {

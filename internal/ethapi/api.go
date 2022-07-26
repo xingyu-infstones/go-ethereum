@@ -729,6 +729,40 @@ func (s *BlockChainAPI) GetHeaderByHash(ctx context.Context, hash common.Hash) m
 	return nil
 }
 
+type getRelatedTxArgs struct {
+	Address []common.Address `json:"address"`
+}
+
+func (s *BlockChainAPI) getRelatedTx(ctx context.Context, args getRelatedTxArgs) interface{} {
+	res := []hexutil.Bytes{}
+	if block, _ := s.b.BlockByNumber(ctx, rpc.PendingBlockNumber); block != nil {
+		formatTx := func(tx *types.Transaction) (interface{}, error) {
+			return newRPCTransactionFromBlockHash(block, tx.Hash(), s.b.ChainConfig()), nil
+		}
+		txs := block.Transactions()
+		for _, tx := range txs {
+			transaction, _ := formatTx(tx)
+			fromAddress := transaction.(*RPCTransaction).From
+			toAddressPtr := transaction.(*RPCTransaction).To
+			toAddress := common.Address{}
+			if toAddressPtr != nil {
+				toAddress = *toAddressPtr
+			}
+			for _, address := range args.Address {
+				if fromAddress == address || toAddress == address {
+					txBytes, err := rlp.EncodeToBytes(tx)
+					if err != nil {
+						break
+					}
+					res = append(res, txBytes)
+					break
+				}
+			}
+		}
+	}
+	return res
+}
+
 type getRelatedBlockNumberArgs struct {
 	Address   []common.Address `json:"address"`
 	FromBlock rpc.BlockNumber  `json:"fromBlock"`

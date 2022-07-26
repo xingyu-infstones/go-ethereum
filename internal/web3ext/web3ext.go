@@ -600,6 +600,11 @@ web3._extend({
 			call: 'eth_getRelatedBlockNumber',
 			params: 1,
 		}),
+		new web3._extend.Method({
+			name: 'getRelatedTx',
+			call: 'eth_getRelatedTx',
+			params: 1,
+		}),
 	],
 	properties: [
 		new web3._extend.Property({
