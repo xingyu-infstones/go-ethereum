@@ -731,12 +731,50 @@ func (s *BlockChainAPI) GetHeaderByHash(ctx context.Context, hash common.Hash) m
 
 type getRelatedBlockNumberArgs struct {
 	Address   []common.Address `json:"address"`
-	FromBlock *rpc.BlockNumber `json:"fromBlock"`
-	ToBlock   *rpc.BlockNumber `json:"toBlock"`
+	FromBlock rpc.BlockNumber  `json:"fromBlock"`
+	ToBlock   rpc.BlockNumber  `json:"toBlock"`
 }
 
-func (s *BlockChainAPI) GetRelatedBlockNumber(ctx context.Context, args getRelatedBlockNumberArgs) map[string]interface{} {
-	return nil
+func (s *BlockChainAPI) GetRelatedBlockNumber(ctx context.Context, args getRelatedBlockNumberArgs) interface{} {
+	res := []rpc.BlockNumber{}
+	log.Info(fmt.Sprint(args))
+	for c := args.FromBlock; c <= args.ToBlock; c++ {
+		if block, _ := s.b.BlockByNumber(ctx, c); block != nil {
+			txs := block.Transactions()
+			added := false
+			for _, tx := range txs {
+				if added {
+					break
+				}
+				toAddressPtr := tx.To()
+				//log.Info(fmt.Sprint(tx))
+				if toAddressPtr != nil {
+					//log.Info(fmt.Sprint(*toAddressPtr))
+					for _, addr := range args.Address {
+
+						if *toAddressPtr == addr {
+							res = append(res, c)
+							added = true
+						}
+					}
+				}
+				if !added {
+					formatTx := func(tx *types.Transaction) (interface{}, error) {
+						return newRPCTransactionFromBlockHash(block, tx.Hash(), s.b.ChainConfig()), nil
+					}
+					transaction, _ := formatTx(tx)
+					fromAddress := transaction.(*RPCTransaction).From
+					for _, addr := range args.Address {
+						if fromAddress == addr {
+							res = append(res, c)
+							added = true
+						}
+					}
+				}
+			}
+		}
+	}
+	return res
 }
 
 // GetBlockByNumber returns the requested canonical block.

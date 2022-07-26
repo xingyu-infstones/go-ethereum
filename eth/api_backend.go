@@ -120,6 +120,10 @@ func (b *EthAPIBackend) BlockByHash(ctx context.Context, hash common.Hash) (*typ
 	return b.eth.blockchain.GetBlockByHash(hash), nil
 }
 
+func (b *EthAPIBackend) GetRelatedBlockNumber(ctx context.Context, Address []common.Address, FromBlock *rpc.BlockNumber, ToBlock *rpc.BlockNumber) ([]uint64, error){
+	return []uint64{11,11,11}, nil
+}
+
 func (b *EthAPIBackend) BlockByNumberOrHash(ctx context.Context, blockNrOrHash rpc.BlockNumberOrHash) (*types.Block, error) {
 	if blockNr, ok := blockNrOrHash.Number(); ok {
 		return b.BlockByNumber(ctx, blockNr)
